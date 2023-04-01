@@ -16,7 +16,7 @@ public class EnrollController {
     @GetMapping("/courses_selection")
     public String getAllCoursesSelectionTable(){
         xStream.processAnnotations(Enroll.class);
-        return xStream.toXML(enrollMapper.findAllEnroll());
+        return xStream.toXML(enrollMapper.selectList(null));
     }
 
     @GetMapping("/courses_selection/add")

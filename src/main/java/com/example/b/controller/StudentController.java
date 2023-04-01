@@ -29,7 +29,7 @@ public class StudentController {
     @GetMapping("/students/get_students_count")
     public String getStudentCnt() {
         xStream.processAnnotations(Student.class);
-        return xStream.toXML(studentMapper.findAllStudents().size());
+        return xStream.toXML(studentMapper.selectList(null).size());
     }
 
     @PostMapping("/students/add")

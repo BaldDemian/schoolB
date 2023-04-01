@@ -48,7 +48,7 @@ public class CourseController {
     public String searchByCno(String courseXml){
         xStream.processAnnotations(Course.class);
         Course course = (Course) xStream.fromXML(courseXml);
-        return xStream.toXML(courseMapper.findByCno(course.getCno()));
+        return xStream.toXML(courseMapper.selectById(course.getCno()));
     }
 
     @PostMapping("/courses/sendSharedCourse")
@@ -57,7 +57,7 @@ public class CourseController {
         Course sharedCourse = (Course) xStream.fromXML(courseXml);
         sharedCourse.setShared("1");
         courseMapper.updateById(sharedCourse);
-        return xStream.toXML(courseMapper.findByCno(sharedCourse.getCno()));
+        return xStream.toXML(courseMapper.selectById(sharedCourse.getCno()));
     }
 
     @PostMapping("/courses/receiveSharedCourse")
