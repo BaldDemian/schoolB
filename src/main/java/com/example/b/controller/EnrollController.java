@@ -54,5 +54,6 @@ public class EnrollController {
         queryWrapper.eq("学号", student.getSno());
         List<Enroll> enrollList = enrollMapper.selectList(queryWrapper);
         return xStream.toXML(enrollList);
+
     }
 }
