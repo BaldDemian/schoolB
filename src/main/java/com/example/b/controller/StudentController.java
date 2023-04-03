@@ -52,5 +52,4 @@ public class StudentController {
         Student student = (Student) xStream.fromXML(studentXml);
         studentMapper.updateById(student); //todo
     }
-
 }
