@@ -1,9 +1,8 @@
 package com.example.b.service.impl;
 
-import com.example.b.mapper.UserMapper;
-import com.example.b.pojo.User;
+import com.example.b.mapper.AccMapper;
+import com.example.b.pojo.Acc;
 import com.example.b.service.LoginService;
-import com.example.b.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,20 +12,21 @@ import java.util.Map;
 @Service
 public class LoginServiceImpl implements LoginService {
     @Autowired
-    private UserMapper userMapper;
+    private AccMapper accMapper;
     @Override
-    public Map<String, String> login(User user) {
+    public Map<String, String> login(Acc acc) {
         // 查询用户名是否存在
         Map<String, String> res = new HashMap<>();
-        User tmp = userMapper.findByName(user.getName());
+        Acc tmp = accMapper.selectById(acc.getName());
+        System.out.println(tmp);
         if (tmp == null) {
             res.put("msg", "登录失败，用户名不存在");
             return res;
         }
-        String token = TokenUtil.getToken(user.getName());
+        //String token = TokenUtil.getToken(acc.getName());
         res.put("msg", "登录成功");
-        res.put("account", user.getName());
-        res.put("token", token);
+        res.put("account", acc.getName());
+        //res.put("token", token);
         return res;
     }
 }

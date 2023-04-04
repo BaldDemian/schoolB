@@ -1,24 +1,21 @@
 package com.example.b.controller;
 
-import com.example.b.mapper.UserMapper;
-import com.example.b.pojo.User;
+import com.example.b.mapper.AccMapper;
+import com.example.b.pojo.Acc;
 import com.example.b.service.LoginService;
 import com.example.b.service.RegisterService;
 import com.example.b.utils.TokenUtil;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 @RestController
-public class UserController {
+public class AccController {
     XStream xStream = new XStream(new StaxDriver());
     @Autowired
-    UserMapper userMapper;
+    AccMapper accMapper;
     @Autowired
     LoginService loginService;
     @Autowired
@@ -26,18 +23,19 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(@RequestParam String userAccountXML) {
-        xStream.processAnnotations(User.class);
-        User user = (User) xStream.fromXML(userAccountXML);
-        Map<String, String> res = registerService.register(user);
+        xStream.processAnnotations(Acc.class);
+        Acc acc = (Acc) xStream.fromXML(userAccountXML);
+        Map<String, String> res = registerService.register(acc);
         return xStream.toXML(res);
     }
-    @PostMapping("/login")
+    @GetMapping("/login")
     public String login(@RequestParam String userAccountXML) {
         // 解析XML到User实例
-        xStream.processAnnotations(User.class);
-        User user = (User) xStream.fromXML(userAccountXML);
+        xStream.processAnnotations(Acc.class);
+        Acc acc = (Acc) xStream.fromXML(userAccountXML);
+        System.out.println(acc);
         // 接收结果
-        Map<String, String> res = loginService.login(user);
+        Map<String, String> res = loginService.login(acc);
         // 将结果转换为XML返回
         return xStream.toXML(res);
     }
@@ -51,6 +49,4 @@ public class UserController {
             return "0";
         }
     }
-
-
 }

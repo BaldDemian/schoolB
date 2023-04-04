@@ -3,8 +3,8 @@ package com.example.b;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.b.mapper.CourseMapper;
 import com.example.b.mapper.EnrollMapper;
+import com.example.b.pojo.Acc;
 import com.example.b.pojo.Enroll;
-import com.example.b.pojo.User;
 import com.example.b.service.LoginService;
 import com.example.b.service.RegisterService;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class BApplicationTests {
 
     @Test
     void testDatabase() {
-        registerService.register(new User("aaa", "123", 2, "123"));
+        System.out.println(loginService.login(new Acc("aaa", "123", 1, "11")));
     }
 
     @Test

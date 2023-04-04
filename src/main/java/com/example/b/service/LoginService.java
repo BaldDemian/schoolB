@@ -1,9 +1,9 @@
 package com.example.b.service;
 
-import com.example.b.pojo.User;
+import com.example.b.pojo.Acc;
 
 import java.util.Map;
 
 public interface LoginService {
-    Map<String, String> login(User user);
+    Map<String, String> login(Acc acc);
 }
