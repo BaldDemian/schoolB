@@ -30,9 +30,6 @@ public class EnrollController {
     @Autowired
     private StudentMapper studentMapper;
 
-    @Autowired
-    private CourseController courseController;
-
     @GetMapping("/courses_selection")
     public String getAllCoursesSelectionTable(){
         xStream.processAnnotations(Enroll.class);
@@ -40,62 +37,53 @@ public class EnrollController {
     }
 
     @GetMapping("/courses_selection/add")
-    public String addCoursesSelectionTable(@RequestParam String courses_selectionXml){
+    public void addCoursesSelectionTable(@RequestParam String courses_selectionXml){
         System.out.println("frontend return: " + courses_selectionXml);
         xStream.processAnnotations(Enroll.class);
         Enroll enroll = (Enroll) xStream.fromXML(courses_selectionXml);
-        System.out.println(enroll);
         // 判断课程号是否以2开头，如果以2开头，表示是本院系的课，直接添加一条选课记录
         String cno = enroll.getCno();
         if (cno.charAt(0) == '2') {
             enrollMapper.insert(enroll);
             // 返回结果至前端
-            xStream.processAnnotations(Resp.class);
-            Resp resp = new Resp("选课成功");
-            return xStream.toXML(resp);
+            //xStream.processAnnotations(Resp.class);
+            //Resp resp = new Resp("选课成功");
+            //return xStream.toXML(resp);
         } else {
             // 不是以2开头，向集成服务器发送选课请求
-            String url = "http://localhost:8081/AaskShare?courseXml={value}&studentXml={value}&from={value}&to={value}";
-            Course course = new Course();
-            course.setCno(cno); // course中仅含课程编号
+            String url = "http://localhost:8081/integration/httpTest/?studentXml={value}&courses_selectionXml={value}&curr={value}&transTo={value}";
             Student student = studentMapper.selectById(enroll.getSno());
-            xStream.processAnnotations(Course.class);
-            String courseXML = xStream.toXML(course);
             xStream.processAnnotations(Student.class);
             String studentXML = xStream.toXML(student);
-            String from = "B";
+            String from = "b";
             String to = "";
             if (cno.charAt(0) == '1') {
                 // 请求共享A的课
-                to = "A";
+                to = "a";
             } else {
-                to = "C";
+                to = "c";
             }
-            String resp = restTemplate.getForObject(url, String.class, courseXML, studentXML, from, to);
+            String resp = restTemplate.getForObject(url, String.class, studentXML, courses_selectionXml, from, to);
             if (!resp.contains("<null>")) {
                 // 选课成功
-                Resp r = new Resp("选课成功");
-                xStream.processAnnotations(Resp.class);
-                return xStream.toXML(r);
+                //Resp r = new Resp("选课成功");
+                //xStream.processAnnotations(Resp.class);
+                //return xStream.toXML(r);
             } else {
                 // 选课失败，表明目标课程不允许共享，向前端返回结果
-                xStream.processAnnotations(Resp.class);
-                Resp r = new Resp("选课失败，目标课程不允许共享");
-                return xStream.toXML(r);
+                //xStream.processAnnotations(Resp.class);
+                //Resp r = new Resp("选课失败，目标课程不允许共享");
+                //return xStream.toXML(r);
             }
             //return null;
         }
     }
-    @GetMapping("/courses/selection/handle_share_request")
+    @GetMapping("/courses_selection/handle_share_request")
     public String handleShareRequest(@RequestParam String course_selectionXml, @RequestParam String studentXml) {
         // 检查目标课程是否支持共享
-        System.out.println(course_selectionXml);
-        System.out.println(studentXml);
         xStream.processAnnotations(Enroll.class);
         Enroll enroll = (Enroll) xStream.fromXML(course_selectionXml);
-        System.out.println(enroll);
         Course course = courseMapper.selectById(enroll.getCno());
-        System.out.println(course);
         if (course.getShared().equals("0")) {
             // 不支持共享
             Resp resp = new Resp("课程不支持共享");
