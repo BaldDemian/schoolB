@@ -55,7 +55,7 @@ public class EnrollController {
             return xStream.toXML(resp);
         } else {
             // 不是以2开头，向集成服务器发送选课请求
-            String url = "http://localhost:8081/AaskShare?courseXml={value}&studentXml={value}";
+            String url = "http://localhost:8081/AaskShare?courseXml={value}&studentXml={value}&from={value}&to={value}";
             Course course = new Course();
             course.setCno(cno); // course中仅含课程编号
             Student student = studentMapper.selectById(enroll.getSno());
@@ -63,19 +63,27 @@ public class EnrollController {
             String courseXML = xStream.toXML(course);
             xStream.processAnnotations(Student.class);
             String studentXML = xStream.toXML(student);
-//            String resp = restTemplate.getForObject(url, String.class, courseXML, studentXML);
-//            if (!resp.contains("<null>")) {
-//                // 选课成功
-//                Resp r = new Resp("选课成功");
-//                xStream.processAnnotations(Resp.class);
-//                return xStream.toXML(r);
-//            } else {
-//                // 选课失败，表明目标课程不允许共享，向前端返回结果
-//                xStream.processAnnotations(Resp.class);
-//                Resp r = new Resp("选课失败，目标课程不允许共享");
-//                return xStream.toXML(r);
-//            }
-            return null;
+            String from = "B";
+            String to = "";
+            if (cno.charAt(0) == '1') {
+                // 请求共享A的课
+                to = "A";
+            } else {
+                to = "C";
+            }
+            String resp = restTemplate.getForObject(url, String.class, courseXML, studentXML, from, to);
+            if (!resp.contains("<null>")) {
+                // 选课成功
+                Resp r = new Resp("选课成功");
+                xStream.processAnnotations(Resp.class);
+                return xStream.toXML(r);
+            } else {
+                // 选课失败，表明目标课程不允许共享，向前端返回结果
+                xStream.processAnnotations(Resp.class);
+                Resp r = new Resp("选课失败，目标课程不允许共享");
+                return xStream.toXML(r);
+            }
+            //return null;
         }
     }
     @GetMapping("/courses/selection/handle_share_request")
