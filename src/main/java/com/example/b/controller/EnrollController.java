@@ -1,7 +1,9 @@
 package com.example.b.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.b.mapper.CourseMapper;
 import com.example.b.mapper.EnrollMapper;
+import com.example.b.pojo.Course;
 import com.example.b.pojo.Enroll;
 import com.example.b.pojo.Student;
 import com.thoughtworks.xstream.XStream;
@@ -9,6 +11,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -16,6 +19,8 @@ public class EnrollController {
     XStream xStream = new XStream(new StaxDriver());
     @Autowired
     private EnrollMapper enrollMapper;
+    @Autowired
+    private CourseMapper courseMapper;
 
     @GetMapping("/courses_selection")
     public String getAllCoursesSelectionTable(){
@@ -53,7 +58,15 @@ public class EnrollController {
         QueryWrapper<Enroll> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("学号", student.getSno());
         List<Enroll> enrollList = enrollMapper.selectList(queryWrapper);
-        return xStream.toXML(enrollList);
+        // 查出对应的Course
+        List<Course> courseList = new ArrayList<>();
+        for (Enroll enroll: enrollList) {
+            String cno = enroll.getCno();
+            Course course = courseMapper.selectById(cno);
+            courseList.add(course);
+        }
+        xStream.processAnnotations(Course.class);
+        return xStream.toXML(courseList);
 
     }
 }
