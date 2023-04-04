@@ -6,9 +6,11 @@ import com.example.b.service.LoginService;
 import com.example.b.service.RegisterService;
 import com.example.b.utils.TokenUtil;
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.Xml.StaxDriver;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 @RestController
