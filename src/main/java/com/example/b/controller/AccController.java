@@ -21,7 +21,7 @@ public class AccController {
     @Autowired
     RegisterService registerService;
 
-    @PostMapping("/register")
+    @GetMapping("/register")
     public String register(@RequestParam String userAccountXML) {
         xStream.processAnnotations(Acc.class);
         Acc acc = (Acc) xStream.fromXML(userAccountXML);
@@ -39,8 +39,8 @@ public class AccController {
         // 将结果转换为XML返回
         return xStream.toXML(res);
     }
-    @PostMapping("/checkToken")
-    public String checkToken(@RequestBody Map<String, String> data) {
+    @GetMapping("/checkToken")
+    public String checkToken(@RequestParam Map<String, String> data) {
         String name = data.get("name");
         String token = data.get("token");
         if (name.equals(TokenUtil.parseToken(token))) {

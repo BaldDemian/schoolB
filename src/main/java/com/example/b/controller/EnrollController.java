@@ -101,21 +101,21 @@ public class EnrollController {
         }
     }
 
-    @PostMapping("/courses_selection/delete")
-    public void deleteCoursesSelectionTable(@RequestBody String courses_selectionXml){
+    @GetMapping("/courses_selection/delete")
+    public void deleteCoursesSelectionTable(@RequestParam String courses_selectionXml){
         xStream.processAnnotations(Enroll.class);
         Enroll enroll = (Enroll) xStream.fromXML(courses_selectionXml);
         enrollMapper.deleteByCnoSno(enroll.getCno(), enroll.getSno());
     }
 
-    @PostMapping("/courses_selection/update")
-    public void updateCoursesSelectionTable(@RequestBody String courses_selectionXml){
+    @GetMapping("/courses_selection/update")
+    public void updateCoursesSelectionTable(@RequestParam String courses_selectionXml){
         xStream.processAnnotations(Enroll.class);
         Enroll enroll = (Enroll) xStream.fromXML(courses_selectionXml);
         enrollMapper.updateById(enroll);
     }
 
-    @PostMapping("/courses_selection/find_by_sno")
+    @GetMapping("/courses_selection/find_by_sno")
     public String findEnrollBySno(@RequestParam String studentXML) {
         System.out.println(studentXML);
         xStream.processAnnotations(Student.class);

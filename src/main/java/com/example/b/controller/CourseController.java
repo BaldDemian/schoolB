@@ -6,8 +6,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,22 +22,22 @@ public class CourseController {
         return xStream.toXML(courseMapper.selectList(null));
     }
 
-    @PostMapping("/courses/add")
-    public void addCourse(@RequestBody String courseXml){
+    @GetMapping("/courses/add")
+    public void addCourse(@RequestParam String courseXml){
         xStream.processAnnotations(Course.class);
         Course course = (Course) xStream.fromXML(courseXml);
         courseMapper.insert(course);
     }
 
-    @PostMapping("/courses/delete")
-    public void deleteCourse(@RequestBody String courseXml){
+    @GetMapping("/courses/delete")
+    public void deleteCourse(@RequestParam String courseXml){
         xStream.processAnnotations(Course.class);
         Course course = (Course) xStream.fromXML(courseXml);
         courseMapper.deleteById(course.getCno());
     }
 
-    @PostMapping("/courses/update")
-    public void updateCourse(@RequestBody String courseXml){
+    @GetMapping("/courses/update")
+    public void updateCourse(@RequestParam String courseXml){
         xStream.processAnnotations(Course.class);
         Course course = (Course) xStream.fromXML(courseXml);
         courseMapper.updateById(course);
@@ -51,8 +50,8 @@ public class CourseController {
         return xStream.toXML(courseMapper.selectById(course.getCno()));
     }
 
-    @PostMapping("/courses/sendSharedCourse")
-    public String sendSharedCourse(@RequestBody String courseXml){
+    @GetMapping("/courses/sendSharedCourse")
+    public String sendSharedCourse(@RequestParam String courseXml){
         xStream.processAnnotations(Course.class);
         Course sharedCourse = (Course) xStream.fromXML(courseXml);
         sharedCourse.setShared("1");
@@ -60,8 +59,8 @@ public class CourseController {
         return xStream.toXML(courseMapper.selectById(sharedCourse.getCno()));
     }
 
-    @PostMapping("/courses/receiveSharedCourse")
-    public void receiveSharedCourse(@RequestBody String courseXml){
+    @GetMapping("/courses/receiveSharedCourse")
+    public void receiveSharedCourse(@RequestParam String courseXml){
         addCourse(courseXml);
     }
 }
