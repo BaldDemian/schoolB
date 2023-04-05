@@ -133,6 +133,7 @@ public class EnrollController {
     }
 
     @GetMapping("/courses_selection/find_by_sno")
+//    @GetMapping("/courses_selection/searchBySno")
     public String findEnrollBySno(@RequestParam String studentXml) {
         System.out.println(studentXml);
         xStream.processAnnotations(Student.class);
@@ -140,7 +141,8 @@ public class EnrollController {
         QueryWrapper<Enroll> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("学号", student.getSno());
         List<Enroll> enrollList = enrollMapper.selectList(queryWrapper);
-        // 查出对应的Course
+
+//         查出对应的Course
         List<Course> courseList = new ArrayList<>();
         for (Enroll enroll: enrollList) {
             String cno = enroll.getCno();
@@ -149,6 +151,19 @@ public class EnrollController {
         }
         xStream.processAnnotations(Course.class);
         return xStream.toXML(courseList);
+
+    }
+//
+    @GetMapping("/courses_selection/searchBySno")
+    public String searchBySno(@RequestParam String courses_selectionXml){
+        xStream.processAnnotations(Enroll.class);
+        Enroll enroll = (Enroll) xStream.fromXML(courses_selectionXml);
+        System.out.println(enroll);
+        QueryWrapper<Enroll> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("学号", enroll.getSno());
+        List<Enroll> enrollList = enrollMapper.selectList(queryWrapper);
+        System.out.println(enrollList);
+        return xStream.toXML(enrollList);
 
     }
 }

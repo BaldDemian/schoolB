@@ -30,7 +30,7 @@ class BApplicationTests {
 
     @Test
     void testDatabase() {
-        System.out.println(loginService.login(new Acc("aaa", "123", 1, "11")));
+        System.out.println(loginService.login(new Acc("2001", "123456", 1, "11")));
     }
 
     @Test

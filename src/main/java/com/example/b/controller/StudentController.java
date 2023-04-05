@@ -33,6 +33,7 @@ public class StudentController {
 
     @GetMapping("/students/add")
     public void addStudent(@RequestParam String studentXml) {
+        System.out.println(studentXml);
         xStream.processAnnotations(Student.class);
         Student student = (Student) xStream.fromXML(studentXml);
         // 检查学生是否已在数据库中

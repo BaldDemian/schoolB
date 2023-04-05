@@ -14,7 +14,7 @@
     <name>b</name>
     <description>b</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>8</java.version>
     </properties>
     <dependencies>
         <dependency>
