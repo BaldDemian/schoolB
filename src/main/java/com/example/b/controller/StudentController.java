@@ -36,6 +36,7 @@ public class StudentController {
         System.out.println(studentXml);
         xStream.processAnnotations(Student.class);
         Student student = (Student) xStream.fromXML(studentXml);
+        System.out.println(student);
         // 检查学生是否已在数据库中
         Student tmp = studentMapper.selectById(student.getSno());
         if (tmp != null) {
