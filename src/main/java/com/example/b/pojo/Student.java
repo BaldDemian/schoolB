@@ -18,7 +18,7 @@ public class Student {
     @XStreamAlias("学号")
     private String sno;
     @TableField(value = "姓名")
-    @XStreamAlias("名称")
+    @XStreamAlias("姓名")
     private String name;
     @TableField(value = "性别")
     @XStreamAlias("性别")
@@ -27,5 +27,6 @@ public class Student {
     @XStreamAlias("专业")
     private String dept;
     @TableField(value = "密码")
+    @XStreamAlias("密码")
     private String password;
 }
