@@ -89,7 +89,28 @@ public class EnrollController {
     public void deleteCoursesSelectionTable(@RequestParam String courses_selectionXml){
         xStream.processAnnotations(Enroll.class);
         Enroll enroll = (Enroll) xStream.fromXML(courses_selectionXml);
-        enrollMapper.deleteByCnoSno(enroll.getCno(), enroll.getSno());
+        // 校验课程号
+        String cno = enroll.getCno();
+        if (cno.charAt(0) == '2') {
+            // 本院系的课，直接删除
+            QueryWrapper<Enroll> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("课程编号", enroll.getCno());
+            queryWrapper.eq("学号", enroll.getSno());
+            enrollMapper.delete(queryWrapper);
+        } else {
+            String url = "http://localhost:8081/integration/httpTestDelete/?studentXml={value}&courses_selectionXml={value}&curr={value}&transTo={value}";
+            String from = "b";
+            String to;
+            if (cno.charAt(0) == '1') {
+                to = "a";
+            } else {
+                to = "c";
+            }
+            Student student = studentMapper.selectById(enroll.getSno());
+            xStream.processAnnotations(Student.class);
+            String studentXML = xStream.toXML(student);
+            String resp = restTemplate.getForObject(url, String.class, studentXML, courses_selectionXml, from, to);
+        }
     }
 
     @GetMapping("/courses_selection/update")

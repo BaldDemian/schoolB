@@ -38,10 +38,6 @@ class BApplicationTests {
         System.out.println(courseMapper.selectById("11"));
     }
     @Test
-    void testDatabase2() {
-        enrollMapper.deleteByCnoSno("11", "123");
-    }
-    @Test
     void testDatabase3() {
         QueryWrapper<Enroll> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("学号", "123");
