@@ -33,6 +33,7 @@ public class AccController {
     @GetMapping("/login")
     public String login(@RequestParam String userAccountXml) {
         // 解析Xml到User实例
+        System.out.println(userAccountXml);
         xStream.processAnnotations(Acc.class);
         Acc acc = (Acc) xStream.fromXML(userAccountXml);
         System.out.println(acc);
