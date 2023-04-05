@@ -97,6 +97,18 @@ public class EnrollController {
             queryWrapper.eq("课程编号", enroll.getCno());
             queryWrapper.eq("学号", enroll.getSno());
             enrollMapper.delete(queryWrapper);
+            // 校验一下学号，如果不是本学院的学生，且该学生在本学院没有选课了，删除该学生
+            String sno = enroll.getSno();
+            if (sno.charAt(0) != '2') {
+                // 不是本学院的学生
+                // 查一下该学生在本学院是否还有选课记录
+                QueryWrapper<Enroll> queryWrapper1 = new QueryWrapper<>();
+                queryWrapper1.eq("学号", sno);
+                List<Enroll> enrollList = enrollMapper.selectList(queryWrapper1);
+                if (enrollList.size() == 0) {
+                    studentMapper.deleteById(sno);
+                }
+            }
         } else {
             String url = "http://localhost:8081/integration/httpTestDelete/?studentXml={value}&courses_selectionXml={value}&curr={value}&transTo={value}";
             String from = "b";
