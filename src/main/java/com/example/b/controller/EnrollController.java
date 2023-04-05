@@ -45,10 +45,6 @@ public class EnrollController {
         String cno = enroll.getCno();
         if (cno.charAt(0) == '2') {
             enrollMapper.insert(enroll);
-            // 返回结果至前端
-            //xStream.processAnnotations(Resp.class);
-            //Resp resp = new Resp("选课成功");
-            //return xStream.toXML(resp);
         } else {
             // 不是以2开头，向集成服务器发送选课请求
             String url = "http://localhost:8081/integration/httpTest/?studentXml={value}&courses_selectionXml={value}&curr={value}&transTo={value}";
@@ -64,18 +60,6 @@ public class EnrollController {
                 to = "c";
             }
             String resp = restTemplate.getForObject(url, String.class, studentXML, courses_selectionXml, from, to);
-            if (!resp.contains("<null>")) {
-                // 选课成功
-                //Resp r = new Resp("选课成功");
-                //xStream.processAnnotations(Resp.class);
-                //return xStream.toXML(r);
-            } else {
-                // 选课失败，表明目标课程不允许共享，向前端返回结果
-                //xStream.processAnnotations(Resp.class);
-                //Resp r = new Resp("选课失败，目标课程不允许共享");
-                //return xStream.toXML(r);
-            }
-            //return null;
         }
     }
     @GetMapping("/courses_selection/handle_share_request")

@@ -35,6 +35,11 @@ public class StudentController {
     public void addStudent(@RequestParam String studentXml) {
         xStream.processAnnotations(Student.class);
         Student student = (Student) xStream.fromXML(studentXml);
+        // 检查学生是否已在数据库中
+        Student tmp = studentMapper.selectById(student.getSno());
+        if (tmp != null) {
+            return;
+        }
         studentMapper.insert(student);
     }
 
@@ -49,6 +54,6 @@ public class StudentController {
     public void updateStudent(@RequestParam String studentXml) {
         xStream.processAnnotations(Student.class);
         Student student = (Student) xStream.fromXML(studentXml);
-        studentMapper.updateById(student); //todo
+        studentMapper.updateById(student);
     }
 }
