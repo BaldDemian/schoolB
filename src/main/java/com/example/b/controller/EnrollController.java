@@ -44,6 +44,12 @@ public class EnrollController {
         // 判断课程号是否以2开头，如果以2开头，表示是本院系的课，直接添加一条选课记录
         String cno = enroll.getCno();
         if (cno.charAt(0) == '2') {
+            QueryWrapper<Enroll> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("学号", enroll.getSno());
+            queryWrapper.eq("课程编号", enroll.getCno());
+            if (enrollMapper.selectOne(queryWrapper) != null) {
+                return;
+            }
             enrollMapper.insert(enroll);
         } else {
             // 不是以2开头，向集成服务器发送选课请求
@@ -133,7 +139,6 @@ public class EnrollController {
     }
 
     @GetMapping("/courses_selection/find_by_sno")
-//    @GetMapping("/courses_selection/searchBySno")
     public String findEnrollBySno(@RequestParam String studentXml) {
         System.out.println(studentXml);
         xStream.processAnnotations(Student.class);
@@ -141,8 +146,6 @@ public class EnrollController {
         QueryWrapper<Enroll> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("学号", student.getSno());
         List<Enroll> enrollList = enrollMapper.selectList(queryWrapper);
-
-//         查出对应的Course
         List<Course> courseList = new ArrayList<>();
         for (Enroll enroll: enrollList) {
             String cno = enroll.getCno();
@@ -151,9 +154,8 @@ public class EnrollController {
         }
         xStream.processAnnotations(Course.class);
         return xStream.toXML(courseList);
-
     }
-//
+
     @GetMapping("/courses_selection/searchBySno")
     public String searchBySno(@RequestParam String courses_selectionXml){
         xStream.processAnnotations(Enroll.class);
