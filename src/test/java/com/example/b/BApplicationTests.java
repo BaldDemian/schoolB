@@ -1,6 +1,8 @@
 package com.example.b;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.b.controller.CourseController;
+import com.example.b.controller.EnrollController;
 import com.example.b.mapper.CourseMapper;
 import com.example.b.mapper.EnrollMapper;
 import com.example.b.pojo.Acc;
@@ -24,6 +26,10 @@ class BApplicationTests {
     CourseMapper courseMapper;
     @Autowired
     EnrollMapper enrollMapper;
+    @Autowired
+    EnrollController enrollController;
+    @Autowired
+    CourseController courseController;
     @Test
     void contextLoads() {
     }
@@ -43,5 +49,10 @@ class BApplicationTests {
         queryWrapper.eq("学号", "123");
         List<Enroll> enrollList = enrollMapper.selectList(queryWrapper);
         System.out.println(enrollList);
+    }
+    @Test
+    void testLLL() {
+        System.out.println(enrollController.getMostPopular());
+        System.out.println(enrollController.getStudentDistribution("2001"));
     }
 }

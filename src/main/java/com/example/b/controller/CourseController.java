@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 public class CourseController {
     XStream xStream = new XStream(new StaxDriver());
@@ -62,5 +65,20 @@ public class CourseController {
     @GetMapping("/courses/receiveSharedCourse")
     public void receiveSharedCourse(@RequestParam String courseXml){
         addCourse(courseXml);
+    }
+
+    @GetMapping("/courses/getCreditDistribution")
+    public List<Integer> credits() {
+        List<Course> courses = courseMapper.selectList(null); // select all
+        int[] cnts = new int[3];
+        for (Course course: courses) {
+            int credits = Integer.parseInt(course.getPoints());
+            cnts[credits - 3]++;
+        }
+        List<Integer> ans = new ArrayList<>();
+        for (int cnt: cnts) {
+            ans.add(cnt);
+        }
+        return ans;
     }
 }

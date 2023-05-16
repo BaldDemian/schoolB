@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -166,6 +167,72 @@ public class EnrollController {
         List<Enroll> enrollList = enrollMapper.selectList(queryWrapper);
         System.out.println(enrollList);
         return xStream.toXML(enrollList);
+    }
 
+    @GetMapping("/courses_selection/getStudentDistribution")
+    public List<Integer> getStudentDistribution(@RequestParam String cno) {
+        QueryWrapper<Enroll> enrollQueryWrapper = new QueryWrapper<>();
+        enrollQueryWrapper.eq("课程编号", cno);
+        List<Enroll> enrollList = enrollMapper.selectList(enrollQueryWrapper);
+        int[] cnts = new int[3];
+        for (Enroll enroll: enrollList) {
+            String sno = enroll.getSno();
+            int index = sno.charAt(0) - '1';
+            cnts[index]++;
+        }
+        List<Integer> ans = new ArrayList<>();
+        for (int cnt : cnts) {
+            ans.add(cnt);
+        }
+        return ans;
+    }
+
+    @GetMapping("/courses_selection/getMostPopularCourse")
+    public List<String> getMostPopular() {
+        List<String> ans = new ArrayList<>();
+        List<Enroll> enrollList = enrollMapper.selectList(null); // select all
+        HashMap<String, String> no2Name = new HashMap<>(); // cno -> cname
+        HashMap<String, Integer> no2Cnt = new HashMap<>(); // cno -> cnt
+        List<Course> courseList = courseMapper.selectList(null);
+        for (Course course: courseList) {
+            String cno = course.getCno();
+            String cname = course.getCName();
+            if (!no2Name.containsKey(cno)) {
+                no2Name.put(cno, cname);
+            }
+        }
+        for (Enroll enroll: enrollList) {
+            String cno = enroll.getCno();
+            no2Cnt.put(cno, no2Cnt.getOrDefault(cno, 0) + 1);
+        }
+        for (String cno: no2Cnt.keySet()) {
+            String cname = no2Name.get(cno);
+            int cnt = no2Cnt.get(cno);
+            ans.add(cname + ":" + cnt);
+        }
+        return ans;
+    }
+
+    @GetMapping("/courses_selection/getGradeDistribution")
+    public List<Integer> grades(@RequestParam String cno) {
+        QueryWrapper<Enroll> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("课程编号", cno);
+        List<Enroll> enrollList = enrollMapper.selectList(queryWrapper);
+        int[] cnts = new int[3];
+        for (Enroll enroll: enrollList) {
+            int grade = Integer.parseInt(enroll.getGrade());
+            if (grade < 60) {
+                cnts[0]++;
+            } else if (grade < 90) {
+                cnts[1]++;
+            } else {
+                cnts[2]++;
+            }
+        }
+        List<Integer> ans = new ArrayList<>();
+        for (int cnt: cnts) {
+            ans.add(cnt);
+        }
+        return ans;
     }
 }
